@@ -1,119 +1,64 @@
-import sys
-from termcolor import colored
-import pickle
+
+import numpy as np
+import pandas as pd
+from datetime import date
+
+EXPENSES = []
+PRICES = []
+DATES = []
+EXPENSE_TYPES = []
+    
+def add_expense(good_or_service,price,date,expense_type):
+    EXPENSES.append(good_or_service)
+    PRICES.append(price)
+    DATES.append(date)
+    EXPENSE_TYPES.append(expense_type)
+
+   
+    
+    
+
+option = -1
+while(option != 0):
+    print('EXPENSE TRACKER')
+    print('1. Add Food Expense')
+    print('2. Add Household Expense')
+    print('3. Add Transportation Expense')
+    print('4. Show and Save the expanse report')
+    print('0. Exit')
+
+    option= int(input('Choose an option: '))
+    if option == 0:
+        break
+    elif option == 1:
+        print('Adding Food')
+        expense_type="FOOD"
+    elif option == 2:
+        print('Adding Household')
+        expense_type="HOUSEHOLD"
+    elif option == 3:
+        print('Adding Transportation')
+        expense_type="TRANSPORTATION"
+    elif option == 4:
+        expense_report = pd.DataFrame()
+        expense_report['EXPENSES'] = EXPENSES
+        expense_report['PRICES']=PRICES
+        expense_report['DATES']=DATES
+        expense_report['EXPENSE_TYPE']=EXPENSE_TYPES  
+
+        expense_report.to_csv('expenses.csv')
+        print(expense_report)
+                
+    else:
+        print('Warning! Choose 1,2,3,4 or 0!')
+
+    if option == 1 or option == 2 or option == 3:
+        good_or_service = input('Enter the good or service for the expense type' +expense_type+':\n' )
+        price = float(input('Enter the price of the good or service:\n'))
+        today = date.today()
+        add_expense(good_or_service,price,today,expense_type)
+    
+    
+    
 
 
-
-#Open list
-def open_list():
-    save = pickle.load(open("list.dat","rb"))
-    show_list()
-
-
-#Save list
-def save_list():
-    pickle.dump(show_list(),open("list.dat","wb"))
-    options()
-
-
-#Calculate salary after taxes and after necessary bills
-def calculate():
-    global taxer
-    taxer = tax / 100
-    q = 1.00 - taxer
-    global percent
-    percent = salary * q
-    global after
-    after = percent - rent - phone
-    save_list()
-
-
-
-#Create list to show finances
-def show_list():
-    x = salary
-    y = percent
-    z = after
-
-    print("| salary: ", x, "            |")
-    print("| salary(After tax): ", y, " |")
-    print("| Funds after bills: ", z, " |")
-
-
-
-
-
-
-
-
-
-#Ask user's salary and tax percentile.
-def create_f():
-    up = True
-    while up:
-        s1 = input("Enter your Salary: ")
-        if s1.isdigit():
-            global salary
-            salary = float(s1)
-            break
-        else:
-            print("Given value was not a number! Try Again.")
-    while True:
-        s2 = input("Enter Tax percentile: ")
-        if s2.isdigit():
-            global tax
-            tax = float(s2)
-            expenses()
-            break
-        else:
-            print("Given value was not a number! Try Again.")
-
-
-#Ask user's expenses
-def expenses():
-    yep = True
-    while yep:
-        s3 = input("Specify your expenses. What is your rent?: ")
-        if s3.isdigit():
-            global rent
-            rent = int(s3)
-            break
-        else:
-            print("Wrong value! Try Again!")
-    while True:
-        s4=input("What is your phone and internet provider fees per month?: ")
-        if s4.isdigit():
-            global phone
-            phone = float(s4)
-            calculate()
-            break
-        else:
-            print("Wrong value! Try Again!")
-
-
-
-
-
-
-
-
-
-
-#Options for user
-def options():
-    op = True
-    while op:
-        info = input(colored("What you want to do?\nCreate finance sheet or edit existing one = 1, Show finance sheet = 2, Exit Program = 3: ",'yellow'))
-        if info == '1':
-            create_f()
-            break
-        elif info == '2':
-            open_list()
-        elif info == '3':
-            sys.exit()
-        else:
-            print("Wrong command!")
-
-
-
-options()
